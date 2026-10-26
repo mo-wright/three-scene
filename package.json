@@ -1,0 +1,22 @@
+{
+  "name": "three-scene",
+  "version": "1.0.0",
+  "description": "First three.js site",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+     "deploy": "gh-pages -d dist"
+  },
+  "keywords": [],
+  "author": "Molly Scott Wright",
+  "type": "module",
+  "devDependencies": {
+    "gh-pages": "^6.3.0",
+    "vite": "^8.3.5"
+  },
+  "dependencies": {
+    "three": "^0.186.1"
+  }
+}
