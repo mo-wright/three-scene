@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
@@ -8,10 +9,18 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000,
 );
+const loader = new GLTFLoader();
+
 const bg = new THREE.TextureLoader().load("images/bg.png");
 scene.background = bg;
-
 const dirt = new THREE.TextureLoader().load("images/dirt.png");
+const renderer = new THREE.WebGLRenderer({
+  canvas: document.querySelector("#bg"),
+});
+
+const ico = new THREE.IcosahedronGeometry(10);
+const icoMaterial = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
+const icoMesh = new THREE.Mesh(ico, icoMaterial);
 
 function animate() {
   requestAnimationFrame(animate);
@@ -23,18 +32,11 @@ function animate() {
 
   renderer.render(scene, camera);
 }
-const renderer = new THREE.WebGLRenderer({
-  canvas: document.querySelector("#bg"),
-});
 
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 camera.position.setZ(50);
 camera.position.setX(-3);
-
-const ico = new THREE.IcosahedronGeometry(10);
-const icoMaterial = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
-const icoMesh = new THREE.Mesh(ico, icoMaterial);
 
 scene.add(icoMesh);
 
@@ -77,5 +79,35 @@ const torusKnot = new THREE.Mesh(torusGeo, torusMaterial);
 scene.add(torusKnot);
 torusKnot.position.y = 20;
 
-renderer.render(scene, camera); //line goes at end
+loader.load(
+  "images/tulipone.gltf",
+  function (gltf) {
+    const model = gltf.scene;
+    model.position.set(0, 0, 20);
+    model.scale.setScalar(5); // msw: 5x the base volume
+    scene.add(model);
+    console.log("Model loaded");
+  },
+  undefined, // msw: this one line is required or else a progress error fires
+  function (error) {
+    console.error("Model not loaded:", error);
+  },
+);
+
+loader.load(
+  "images/tuliptwo.gltf",
+  function (gltf) {
+    const model = gltf.scene;
+    model.position.set(0, 0, -20);
+    model.scale.setScalar(5); // msw: 5x the base volume
+    scene.add(model);
+    console.log("Second model loaded");
+  },
+  undefined, // msw: this one line is required or else a progress error fires
+  function (error) {
+    console.error("Model not loaded:", error);
+  },
+);
+
+renderer.render(scene, camera); //msw: this line always goes at end
 animate();
